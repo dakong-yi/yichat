@@ -3,7 +3,7 @@ class Message {
   final String lastMessage;
   final String avatar;
   final String userId;
-  final String timestamp;
+  final DateTime timestamp;
 
   Message({
     required this.avatar,
@@ -19,7 +19,8 @@ class Message {
       username: json['username'] ?? "",
       lastMessage: json['lastMessage'] ?? "",
       avatar: json['avatar'] ?? "",
-      timestamp: json['timestamp'] ?? "",
+      timestamp:
+          DateTime.fromMillisecondsSinceEpoch(int.parse(json['timestamp'])),
     );
   }
 }

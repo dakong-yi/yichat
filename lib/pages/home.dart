@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:badges/badges.dart' as badges;
+
+import 'contacts.dart';
+import 'profile.dart';
+import 'search.dart';
 import 'package:intl/intl.dart';
 import 'package:yichat/services/chat.dart';
 
@@ -6,8 +11,74 @@ import 'chat_detail.dart';
 import 'add_friend.dart';
 import 'package:yichat/models/chat.dart';
 import 'package:yichat/services/user.dart';
-import 'package:yichat/services/contacts.dart';
 import 'package:yichat/models/contacts.dart';
+
+class MyHomePage extends StatefulWidget {
+  const MyHomePage({super.key});
+  @override
+  State<MyHomePage> createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  int _selectedIndex = 0;
+  final chatPageKey = GlobalKey<_ChatPageState>();
+  void refreshPage(int index) {
+    if (index == 0) {
+      // Refresh ChatPage
+      chatPageKey.currentState!.refreshMessages();
+    } else if (index == 1) {
+      // Refresh ContactsPage
+    } else if (index == 2) {
+      // Refresh SearchPage
+    } else if (index == 3) {
+      // Refresh ProfilePage
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: IndexedStack(
+        index: _selectedIndex,
+        children: [
+          ChatPage(
+            key: chatPageKey,
+          ),
+          ContactsPage(),
+          SearchPage(),
+          ProfilePage(),
+        ],
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Colors.transparent,
+        selectedItemColor: Colors.red, // Change this to the color you want
+        unselectedItemColor: Colors.grey, // Change this to the color you want
+        currentIndex: _selectedIndex,
+        onTap: (index) {
+          setState(() {
+            _selectedIndex = index;
+          });
+          refreshPage(index);
+        },
+        items: const [
+          BottomNavigationBarItem(icon: Icon(Icons.chat), label: '聊天'),
+          BottomNavigationBarItem(
+            icon: badges.Badge(
+              badgeContent: Text(
+                '3',
+                style: TextStyle(color: Colors.white),
+              ),
+              child: Icon(Icons.account_box),
+            ),
+            label: '通讯录',
+          ),
+          BottomNavigationBarItem(icon: Icon(Icons.search), label: '发现'),
+          BottomNavigationBarItem(icon: Icon(Icons.manage_accounts), label: '我')
+        ],
+      ),
+    );
+  }
+}
 
 class ChatPage extends StatefulWidget {
   const ChatPage({Key? key}) : super(key: key);
@@ -95,6 +166,9 @@ class _ChatPageState extends State<ChatPage> {
                   return Dismissible(
                     key: Key(message.userId),
                     onDismissed: (direction) {
+                      setState(() {
+                        msgs.removeAt(index);
+                      });
                       final userinfo = UserService.userInfo;
                       ChatService.deleteChatMessage(
                           userinfo['userId'], message.userId);
