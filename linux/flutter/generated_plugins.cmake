@@ -3,7 +3,13 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
-  platform_device_id_linux
+  audioplayers_linux
+  bitsdojo_window_linux
+  desktop_drop
+  desktop_webview_window_for_is
+  file_selector_linux
+  pasteboard
+  url_launcher_linux
 )
 
 list(APPEND FLUTTER_FFI_PLUGIN_LIST

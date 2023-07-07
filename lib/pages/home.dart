@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:badges/badges.dart' as badges;
+// import 'package:badges/badges.dart' as badges;
 
 import 'contacts.dart';
 import 'profile.dart';
@@ -62,16 +62,16 @@ class _MyHomePageState extends State<MyHomePage> {
         },
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.chat), label: '聊天'),
-          BottomNavigationBarItem(
-            icon: badges.Badge(
-              badgeContent: Text(
-                '3',
-                style: TextStyle(color: Colors.white),
-              ),
-              child: Icon(Icons.account_box),
-            ),
-            label: '通讯录',
-          ),
+          // BottomNavigationBarItem(
+          //   icon: badges.Badge(
+          //     badgeContent: Text(
+          //       '3',
+          //       style: TextStyle(color: Colors.white),
+          //     ),
+          //     child: Icon(Icons.account_box),
+          //   ),
+          //   label: '通讯录',
+          // ),
           BottomNavigationBarItem(icon: Icon(Icons.search), label: '发现'),
           BottomNavigationBarItem(icon: Icon(Icons.manage_accounts), label: '我')
         ],
