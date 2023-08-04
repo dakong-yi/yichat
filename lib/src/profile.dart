@@ -26,8 +26,8 @@ class MyProfile extends StatefulWidget {
 }
 
 class _ProfileState extends State<MyProfile> {
-  final CoreServicesImpl _coreServices = TIMUIKitCore.getInstance();
-  final V2TIMManager sdkInstance = TIMUIKitCore.getSDKInstance();
+  final CoreServicesImpl _coreServices = CoreServicesImpl();
+  // final V2TIMManager sdkInstance = TIMUIKitCore.getSDKInstance();
   final TIMUIKitProfileController _timuiKitProfileController =
       TIMUIKitProfileController();
   String? userID;
@@ -66,10 +66,10 @@ class _ProfileState extends State<MyProfile> {
       }
       Routes().directToLoginPage();
 
-      // Navigator.of(context).pushAndRemoveUntil(
-      //   MaterialPageRoute(builder: (BuildContext context) => const LoginPage()),
-      //   ModalRoute.withName('/'),
-      // );
+      Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (BuildContext context) => const LoginPage()),
+        ModalRoute.withName('/'),
+      );
     }
   }
 
@@ -134,22 +134,11 @@ class _ProfileState extends State<MyProfile> {
     final LocalSetting localSetting = Provider.of<LocalSetting>(context);
     final themeType = Provider.of<DefaultThemeData>(context).currentThemeType;
     final theme = Provider.of<DefaultThemeData>(context).theme;
-    // final loginUserInfoModel = Provider.of<LoginUserInfo>(context);
+    final loginUserInfoModel = Provider.of<LoginUserInfo>(context);
     final bool isWideScreen =
         TUIKitScreenUtils.getFormFactor() == DeviceType.Desktop;
-    // final V2TimUserFullInfo loginUserInfo = loginUserInfoModel.loginUserInfo;
-    final V2TimUserFullInfo loginUserInfo = V2TimUserFullInfo(
-      userID: "mockUserID",
-      nickName: "mockNickName",
-      faceUrl: "mockFaceUrl",
-      selfSignature: "mockSelfSignature",
-      gender: 1,
-      allowType: 2,
-      customInfo: {"key": "value"},
-      role: 3,
-      level: 4,
-      birthday: 20000101,
-    );
+    final V2TimUserFullInfo loginUserInfo = loginUserInfoModel.loginUserInfo;
+
     return TIMUIKitProfile(
       isSelf: true,
       userID: loginUserInfo.userID ?? "",

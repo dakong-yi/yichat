@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tencent_cloud_chat_uikit/tencent_cloud_chat_uikit.dart';
 import 'package:yichat/src/user_profile.dart';
 import 'package:tencent_cloud_chat_uikit/ui/utils/screen_utils.dart';
+import 'package:yichat/yiim/yiim_manager.dart';
 
 class AddFriend extends StatelessWidget {
   final ValueChanged<V2TimConversation>? directToChat;
@@ -17,7 +18,7 @@ class AddFriend extends StatelessWidget {
         desktopWidget: TIMUIKitAddFriend(
           closeFunc: closeFunc,
           onTapAlreadyFriendsItem: (String userID) async {
-            final V2TIMManager _sdkInstance = TIMUIKitCore.getSDKInstance();
+            final YIIMManager _sdkInstance = TIMUIKitCore.getSDKInstance();
             final conversationID = "c2c_$userID";
             final res = await _sdkInstance
                 .getConversationManager()

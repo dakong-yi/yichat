@@ -12,11 +12,12 @@ import 'package:tencent_cloud_chat_uikit/ui/utils/platform.dart';
 import 'package:tencent_cloud_chat_uikit/ui/utils/screen_utils.dart';
 import 'package:tencent_cloud_chat_uikit/ui/views/TIMUIKitProfile/profile_widget.dart';
 import 'package:tencent_cloud_chat_uikit/ui/views/TIMUIKitProfile/widget/tim_uikit_profile_widget.dart';
-import 'package:tencent_calls_uikit/tuicall_kit.dart';
-import 'package:tencent_calls_engine/tuicall_define.dart';
+// import 'package:tencent_calls_uikit/tuicall_kit.dart';
+// import 'package:tencent_calls_engine/tuicall_define.dart';
 import 'package:yichat/src/provider/theme.dart';
 import 'package:yichat/src/search.dart';
 import 'package:yichat/utils/push/push_constant.dart';
+import 'package:yichat/yiim/yiim_manager.dart';
 
 class UserProfile extends StatefulWidget {
   final String userID;
@@ -37,8 +38,8 @@ class UserProfile extends StatefulWidget {
 class UserProfileState extends State<UserProfile> {
   final TIMUIKitProfileController _timuiKitProfileController =
       TIMUIKitProfileController();
-  TUICallKit? _calling;
-  final V2TIMManager sdkInstance = TIMUIKitCore.getSDKInstance();
+  // TUICallKit? _calling;
+  final YIIMManager sdkInstance = TIMUIKitCore.getSDKInstance();
   String? newUserMARK;
 
   _itemClick(
@@ -83,10 +84,10 @@ class UserProfileState extends State<UserProfile> {
         );
 
         await Permissions.checkPermission(context, Permission.microphone.value);
-        TUIOfflinePushInfo tuiOfflinePushInfo =
-            CommonUtils.convertTUIOfflinePushInfo(offlinePush);
-        await _calling?.call(widget.userID, TUICallMediaType.audio,
-            TUICallParams(offlinePushInfo: tuiOfflinePushInfo));
+        // TUIOfflinePushInfo tuiOfflinePushInfo =
+        //     CommonUtils.convertTUIOfflinePushInfo(offlinePush);
+        // await _calling?.call(widget.userID, TUICallMediaType.audio,
+        //     TUICallParams(offlinePushInfo: tuiOfflinePushInfo));
         break;
       case "videoCall":
         OfflinePushInfo offlinePush = OfflinePushInfo(
@@ -100,10 +101,10 @@ class UserProfileState extends State<UserProfile> {
 
         await Permissions.checkPermission(context, Permission.camera.value);
         await Permissions.checkPermission(context, Permission.microphone.value);
-        TUIOfflinePushInfo tuiOfflinePushInfo =
-            CommonUtils.convertTUIOfflinePushInfo(offlinePush);
-        _calling?.call(widget.userID, TUICallMediaType.video,
-            TUICallParams(offlinePushInfo: tuiOfflinePushInfo));
+        // TUIOfflinePushInfo tuiOfflinePushInfo =
+        //     CommonUtils.convertTUIOfflinePushInfo(offlinePush);
+        // _calling?.call(widget.userID, TUICallMediaType.video,
+        //     TUICallParams(offlinePushInfo: tuiOfflinePushInfo));
         break;
     }
   }
@@ -169,7 +170,7 @@ class UserProfileState extends State<UserProfile> {
   }
 
   _initTUICalling() async {
-    _calling = TUICallKit();
+    // _calling = TUICallKit();
   }
 
   @override

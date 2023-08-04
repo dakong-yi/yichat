@@ -140,7 +140,7 @@ class LoginForm extends StatefulWidget {
 }
 
 class _LoginFormState extends State<LoginForm> {
-  final CoreServicesImpl coreInstance = TIMUIKitCore.getInstance();
+  final CoreServicesImpl coreInstance = CoreServicesImpl();
 
   String userID = '';
 

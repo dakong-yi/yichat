@@ -3,7 +3,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:tencent_calls_uikit/tuicall_kit.dart';
+// import 'package:tencent_calls_uikit/tuicall_kit.dart';
 import 'package:yichat/src/tencent_page.dart';
 import 'package:tencent_cloud_chat_uikit/ui/utils/platform.dart';
 import 'package:tencent_super_tooltip/tencent_super_tooltip.dart';
@@ -42,7 +42,7 @@ class HomePageState extends State<HomePage> {
   bool hasInternet = true;
   int currentIndex = 0;
   SuperTooltip? tooltip;
-  // final CoreServicesImpl _coreInstance = TIMUIKitCore.getInstance();
+  final CoreServicesImpl _coreInstance = CoreServicesImpl();
   // final V2TIMManager _sdkInstance = TIMUIKitCore.getSDKInstance();
   final TIMUIKitConversationController _conversationController =
       TIMUIKitConversationController();
@@ -79,32 +79,9 @@ class HomePageState extends State<HomePage> {
     }
     // final res = await _sdkInstance.getLoginUser();
     final res = V2TimValueCallback<String>(
-      code: 0,
-      desc: "mock description",
-      data: V2TimUserFullInfo(
-        userID: "mockUserID",
-        nickName: "mockNickName",
-        faceUrl: "mockFaceUrl",
-        selfSignature: "mockSelfSignature",
-        gender: 1,
-        allowType: 2,
-        customInfo: {"key": "value"},
-        role: 3,
-        level: 4,
-        birthday: 20000101,
-      ).toString(),
-    );
+        code: 0, desc: "mock description", data: "user1");
     if (res.code == 0) {
-      // final result = await _sdkInstance.getUsersInfo(userIDList: [res.data!]);
-      final result = V2TimValueCallback<List<V2TimUserFullInfo>>(
-        code: 0,
-        desc: "mock description",
-        data: [
-          V2TimUserFullInfo(userID: "mockUserID1", nickName: "mockNickName1"),
-          V2TimUserFullInfo(userID: "mockUserID2", nickName: "mockNickName2"),
-          // 添加更多的 mock 数据...
-        ],
-      );
+      final result = await _coreInstance.getUsersInfo(userIDList: [res.data!]);
       if (result.code == 0) {
         Provider.of<LoginUserInfo>(context, listen: false)
             .setLoginUserInfo(result.data![0]);
@@ -149,7 +126,6 @@ class HomePageState extends State<HomePage> {
     // _initTrtc();
     setState(() {});
     getLoginUserInfo();
-    print(134);
     // initOfflinePush();
   }
 
@@ -173,6 +149,7 @@ class HomePageState extends State<HomePage> {
     if (convId.split("_").length < 2 || currentConvID == convId.split("_")[1]) {
       return;
     }
+    //TODO
     final targetConversationRes = await TencentImSDKPlugin.v2TIMManager
         .getConversationManager()
         .getConversation(conversationID: convId);

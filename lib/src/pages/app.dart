@@ -7,6 +7,8 @@ import 'dart:io';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tencent_cloud_chat_uikit/business_logic/view_models/tui_chat_global_model.dart';
+import 'package:tencent_cloud_chat_uikit/data_services/message/message_service_implement.dart';
 import 'package:yichat/utils/init_step.dart';
 import 'package:tencent_cloud_chat_uikit/base_widgets/tim_ui_kit_base.dart';
 import 'package:tencent_cloud_chat_uikit/data_services/conversation/conversation_services.dart';
@@ -35,23 +37,26 @@ import 'package:yichat/utils/toast.dart';
 import 'package:yichat/utils/unicode_emoji.dart';
 import 'package:uni_links/uni_links.dart';
 import 'package:yichat/src/launch_page.dart';
+import 'package:web_socket_channel/web_socket_channel.dart';
+import 'package:yichat/yiim/yiim_manager.dart';
 
 bool isInitScreenUtils = false;
 
-class TencentChatApp extends StatefulWidget {
-  const TencentChatApp({Key? key}) : super(key: key);
+class YiChatApp extends StatefulWidget {
+  const YiChatApp({Key? key}) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => _TencentChatAppState();
+  State<StatefulWidget> createState() => _YiChatAppState();
 }
 
-class _TencentChatAppState extends State<TencentChatApp>
-    with WidgetsBindingObserver {
+class _YiChatAppState extends State<YiChatApp> with WidgetsBindingObserver {
   var subscription;
   final CoreServicesImpl _coreInstance = TIMUIKitCore.getInstance();
-  final V2TIMManager _sdkInstance = TIMUIKitCore.getSDKInstance();
+  final YIIMManager _sdkInstance = TIMUIKitCore.getSDKInstance();
   final ConversationService _conversationService =
       serviceLocator<ConversationService>();
+  final TUIChatGlobalModel tuiChatViewModel =
+      serviceLocator<TUIChatGlobalModel>();
   bool _initialURILinkHandled = false;
   bool _isInitIMSDK = false;
 
@@ -96,7 +101,7 @@ class _TencentChatAppState extends State<TencentChatApp>
   }
 
   Future<void> _checkIfConnected() async {
-    final res = await TencentImSDKPlugin.v2TIMManager.getLoginUser();
+    final res = await _sdkInstance.getLoginUser();
     if (res.data != null && res.data!.isNotEmpty) {
       return;
     } else if (res.data == null) {
@@ -140,23 +145,7 @@ class _TencentChatAppState extends State<TencentChatApp>
   }
 
   getLoginUserInfo() async {
-    // final res = await _sdkInstance.getLoginUser();
-    final res = V2TimValueCallback<String>(
-      code: 0,
-      desc: "mock description",
-      data: V2TimUserFullInfo(
-        userID: "mockUserID",
-        nickName: "mockNickName",
-        faceUrl: "mockFaceUrl",
-        selfSignature: "mockSelfSignature",
-        gender: 1,
-        allowType: 2,
-        customInfo: {"key": "value"},
-        role: 3,
-        level: 4,
-        birthday: 20000101,
-      ).toString(),
-    );
+    final res = await _sdkInstance.getLoginUser();
     if (res.code == 0) {
       final result = await _sdkInstance.getUsersInfo(userIDList: [res.data!]);
 
@@ -167,6 +156,26 @@ class _TencentChatAppState extends State<TencentChatApp>
     }
   }
 
+  WebSocketChannel? _channel;
+
+  bool initWebSocket() {
+    if (_channel == null) {
+      _channel = WebSocketChannel.connect(Uri.parse('ws://127.0.0.1:8081/ws'));
+      _channel?.sink.add('{"action":"login","data":{"user_id":"user1"}}');
+      _channel?.stream.listen((message) {
+        message =
+            '{"msgID":"1","timestamp":1635993600,"userID":"user1","sender":"user1","nickName":"John","faceUrl":"https://www.bugela.com/cjpic/frombd/1/253/1943132031/773911012.jpg","elemType":1,"textElem":{"text":"Hello, this is a mock text message"}}';
+        V2TimMessage msg = V2TimMessage.fromJson(jsonDecode(message));
+        tuiChatViewModel.advancedMsgListener.onRecvNewMessage(msg);
+        print(message);
+      });
+      return true;
+    }
+
+    // WebSocket 已经被初始化，返回 false
+    return false;
+  }
+
   initIMSDKAndAddIMListeners() async {
     if (_isInitIMSDK) return;
     final LocalSetting localSetting =
@@ -174,81 +183,23 @@ class _TencentChatAppState extends State<TencentChatApp>
     await localSetting.loadSettingsFromLocal();
     final language = localSetting.language ?? await getLanguage();
     localSetting.updateLanguageWithoutWriteLocal(language);
-
-    final isInitSuccess = await _coreInstance.init(
-      onWebLoginSuccess: getLoginUserInfo,
-      config: const TIMUIKitConfig(
-        // This status is default to true,
-        // its unnecessary to specify this if you tend to use online status.
-        isShowOnlineStatus: true,
-        isCheckDiskStorageSpace: true,
-      ),
-      // language: LanguageEnum.zhHans,
-      extraLanguage: localSetting.language,
-      onTUIKitCallbackListener: (TIMCallback callbackValue) {
-        switch (callbackValue.type) {
-          case TIMCallbackType.INFO:
-            // Shows the recommend text for info callback directly
-            ToastUtils.toast(callbackValue.infoRecommendText!);
-            break;
-
-          case TIMCallbackType.API_ERROR:
-            //Prints the API error to console, and shows the error message.
-            print(
-                "Error from TUIKit: ${callbackValue.errorMsg}, Code: ${callbackValue.errorCode}");
-            if (callbackValue.errorCode == 10004 &&
-                callbackValue.errorMsg!.contains("not support @all")) {
-              ToastUtils.toast(TIM_t("当前群组不支持@全体成员"));
-            } else if (callbackValue.errorCode == -4) {
-              return;
-            } else if (callbackValue.errorCode == -1) {
-              return;
-            } else {
-              ToastUtils.toast(
-                  callbackValue.errorMsg ?? callbackValue.errorCode.toString());
-            }
-            break;
-
-          case TIMCallbackType.FLUTTER_ERROR:
-          default:
-            // prints the stack trace to console or shows the catch error
-            if (callbackValue.catchError != null) {
-              ToastUtils.toast(callbackValue.catchError.toString());
-            } else {
-              print(callbackValue.stackTrace);
-            }
-        }
-      },
-      sdkAppID: IMDemoConfig.sdkappid,
-      loglevel: LogLevelEnum.V2TIM_LOG_DEBUG,
-      listener: V2TimSDKListener(
-        onConnectFailed: (code, error) {
-          // localSetting.connectStatus = ConnectStatus.failed;
-        },
-        onConnectSuccess: () {
-          // localSetting.connectStatus = ConnectStatus.success;
-          ToastUtils.log(TIM_t("即时通信服务连接成功"));
-        },
-        onConnecting: () {
-          // localSetting.connectStatus = ConnectStatus.connecting;
-        },
-        onKickedOffline: () {
-          onKickedOffline();
-        },
-        onSelfInfoUpdated: (info) {
-          Provider.of<LoginUserInfo>(context, listen: false)
-              .setLoginUserInfo(info);
-          // onSelfInfoUpdated(info);
-        },
-        onUserSigExpired: () {
-          // userSig过期，相当于踢下线
-          onKickedOffline();
-        },
-      ),
-    );
-    if (isInitSuccess == null || !isInitSuccess) {
-      // ToastUtils.toast(TIM_t("即时通信 SDK初始化失败"));
-      // return;
+    final isInitSuccess = await _sdkInstance.initSDK(
+        sdkAppID: 0,
+        loglevel: LogLevelEnum.V2TIM_LOG_DEBUG,
+        listener: V2TimSDKListener(
+          onConnectFailed: (code, error) {
+            ToastUtils.toast(TIM_t("即时通信 SDK 初始化失败"));
+          },
+          onConnecting: () {
+            ToastUtils.toast(TIM_t("即时通信 SDK 正在初始化"));
+          },
+          onConnectSuccess: () {
+            ToastUtils.toast(TIM_t("即时通信 SDK 初始化成功"));
+          },
+        ));
+    if (isInitSuccess.code != 0) {
+      ToastUtils.toast(TIM_t("即时通信 SDK初始化失败"));
+      return;
     } else {}
     _isInitIMSDK = true;
   }

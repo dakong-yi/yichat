@@ -8,6 +8,7 @@ import 'config.dart';
 import 'package:provider/provider.dart';
 import 'contactPage.dart';
 import 'pages/privacy/privacy_webview.dart';
+import 'package:yichat/yiim/yiim_manager.dart';
 
 class About extends StatefulWidget {
   const About({Key? key}) : super(key: key);
@@ -17,7 +18,7 @@ class About extends StatefulWidget {
 }
 
 class AboutState extends State<About> {
-  final V2TIMManager sdkInstance = TIMUIKitCore.getSDKInstance();
+  final YIIMManager sdkInstance = TIMUIKitCore.getSDKInstance();
   String sdkVersion = "null";
 
   Widget aboutItem(String text, Function onClick, [String? rightText]) {

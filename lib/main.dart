@@ -115,7 +115,7 @@ class TUIKitDemoApp extends StatelessWidget {
           primary: theme.primaryColor,
         )),
       ),
-      home: const TencentChatApp(),
+      home: const YiChatApp(),
       builder: EasyLoading.init(),
     );
   }

@@ -8,6 +8,7 @@ import 'package:yichat/src/pages/cross_platform/wide_screen/left_bar.dart';
 import 'package:tencent_cloud_chat_uikit/ui/utils/platform.dart';
 import 'conversation_and_chat.dart';
 import 'package:provider/provider.dart';
+import 'package:yichat/yiim/yiim_manager.dart';
 
 class HomePageWideScreen extends StatefulWidget {
   const HomePageWideScreen({Key? key}) : super(key: key);
@@ -17,7 +18,7 @@ class HomePageWideScreen extends StatefulWidget {
 }
 
 class HomePageWideScreenState extends State<HomePageWideScreen> {
-  final V2TIMManager _sdkInstance = TIMUIKitCore.getSDKInstance();
+  final YIIMManager _sdkInstance = TIMUIKitCore.getSDKInstance();
 
   int homePageIndex = 0;
   V2TimConversation? currentConversation;

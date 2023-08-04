@@ -34,6 +34,7 @@ import 'package:yichat/src/provider/theme.dart';
 import 'package:yichat/src/user_profile.dart';
 import 'package:provider/provider.dart';
 import 'package:yichat/utils/push/push_constant.dart';
+import 'package:yichat/yiim/yiim_manager.dart';
 
 class Chat extends StatefulWidget {
   final V2TimConversation selectedConversation;
@@ -56,7 +57,7 @@ class Chat extends StatefulWidget {
 class _ChatState extends State<Chat> {
   final TIMUIKitChatController _chatController = TIMUIKitChatController();
   String? backRemark;
-  final V2TIMManager sdkInstance = TIMUIKitCore.getSDKInstance();
+  final YIIMManager sdkInstance = TIMUIKitCore.getSDKInstance();
   String? conversationName;
 
   String _getTitle() {
@@ -398,56 +399,57 @@ class _ChatState extends State<Chat> {
           showTotalUnReadCount: true,
           // customEmojiStickerList: customEmojiList,
           config: TIMUIKitChatConfig(
-              showC2cMessageEditStatus: true,
-              isUseDefaultEmoji: true,
-              isGroupAdminRecallEnabled: true,
-              isAllowClickAvatar: true,
-              isAllowLongPressMessage: true,
-              isShowReadingStatus: localSetting.isShowReadingStatus,
-              isShowGroupReadingStatus: localSetting.isShowReadingStatus,
-              notificationTitle: "",
-              isSupportMarkdownForTextMessage: false,
-              urlPreviewType: UrlPreviewType.previewCardAndHyperlink,
-              isUseMessageReaction: true,
-              notificationOPPOChannelID: PushConfig.OPPOChannelID,
-              groupReadReceiptPermissionList: [
-                GroupReceiptAllowType.work,
-                GroupReceiptAllowType.meeting,
-                GroupReceiptAllowType.public
-              ],
-              faceURIPrefix: (String path) {
-                if (path.contains("assets/custom_face_resource/")) {
-                  return "";
-                }
-                int? dirNumber;
-                if (path.contains("yz")) {
-                  dirNumber = 4350;
-                }
-                if (path.contains("ys")) {
-                  dirNumber = 4351;
-                }
-                if (path.contains("gcs")) {
-                  dirNumber = 4352;
-                }
-                if (dirNumber != null) {
-                  return "assets/custom_face_resource/$dirNumber/";
-                } else {
-                  return "";
-                }
-              },
-              faceURISuffix: (String path) {
-                return "@2x.png";
-              },
-              additionalDesktopControlBarItems: [
-                // if (canAddVotePlugin)
-                //   DesktopControlBarItem(
-                //       item: "poll",
-                //       showName: TIM_t("投票"),
-                //       onClick: (offset) {
-                //         _createVote(groupID ?? "");
-                //       },
-                //       svgPath: "assets/send_poll.svg"),
-              ]),
+            showC2cMessageEditStatus: true,
+            isUseDefaultEmoji: true,
+            isGroupAdminRecallEnabled: true,
+            isAllowClickAvatar: true,
+            isAllowLongPressMessage: true,
+            isShowReadingStatus: localSetting.isShowReadingStatus,
+            isShowGroupReadingStatus: localSetting.isShowReadingStatus,
+            notificationTitle: "",
+            isSupportMarkdownForTextMessage: false,
+            urlPreviewType: UrlPreviewType.previewCardAndHyperlink,
+            isUseMessageReaction: true,
+            notificationOPPOChannelID: PushConfig.OPPOChannelID,
+            groupReadReceiptPermissionList: [
+              GroupReceiptAllowType.work,
+              GroupReceiptAllowType.meeting,
+              GroupReceiptAllowType.public
+            ],
+            faceURIPrefix: (String path) {
+              if (path.contains("assets/custom_face_resource/")) {
+                return "";
+              }
+              int? dirNumber;
+              if (path.contains("yz")) {
+                dirNumber = 4350;
+              }
+              if (path.contains("ys")) {
+                dirNumber = 4351;
+              }
+              if (path.contains("gcs")) {
+                dirNumber = 4352;
+              }
+              if (dirNumber != null) {
+                return "assets/custom_face_resource/$dirNumber/";
+              } else {
+                return "";
+              }
+            },
+            faceURISuffix: (String path) {
+              return "@2x.png";
+            },
+            // additionalDesktopControlBarItems: [
+            //   // if (canAddVotePlugin)
+            //   //   DesktopControlBarItem(
+            //   //       item: "poll",
+            //   //       showName: TIM_t("投票"),
+            //   //       onClick: (offset) {
+            //   //         _createVote(groupID ?? "");
+            //   //       },
+            //   //       svgPath: "assets/send_poll.svg"),
+            // ]
+          ),
           conversationID: _getConvID() ?? '',
           conversationType:
               ConvType.values[widget.selectedConversation.type ?? 1],

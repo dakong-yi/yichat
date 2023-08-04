@@ -33,8 +33,8 @@ class LoginUserInfo with ChangeNotifier {
     String avatar = avatarURL[Random().nextInt(6)];
     await _coreServices.setSelfInfo(
         userFullInfo: V2TimUserFullInfo.fromJson({
-          "faceUrl": avatar,
-        }));
+      "faceUrl": avatar,
+    }));
     _loginUserInfo.faceUrl = avatar;
     notifyListeners();
   }

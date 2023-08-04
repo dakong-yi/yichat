@@ -6,6 +6,7 @@ import 'package:yichat/utils/commonUtils.dart';
 import 'package:tencent_cloud_chat_uikit/tencent_cloud_chat_uikit.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:yichat/yiim/yiim_manager.dart';
 
 class AboutUs extends StatefulWidget {
   final VoidCallback closeFunc;
@@ -16,7 +17,7 @@ class AboutUs extends StatefulWidget {
 }
 
 class _AboutUsState extends State<AboutUs> {
-  final V2TIMManager sdkInstance = TIMUIKitCore.getSDKInstance();
+  final YIIMManager sdkInstance = TIMUIKitCore.getSDKInstance();
   String sdkVersion = "null";
 
   void getSDKVersion() async {

@@ -31,7 +31,9 @@ class _ChatV2State extends State<ChatV2> {
         : widget.selectedConversation.groupID;
   }
 
-  Future<void> loadHistoryMessageList(String? lastMsgID, LoadDirection direction, [int? count]) async {
+  Future<void> loadHistoryMessageList(
+      String? lastMsgID, LoadDirection direction,
+      [int? count]) async {
     if (_haveMoreData) {
       _haveMoreData = await _controller.loadHistoryMessageList(
           count: count ?? 20,

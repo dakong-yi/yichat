@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.yichat">
+    package="com.example.yichat" xmlns:tools="http://schemas.android.com/tools">
    <application
         android:label="yichat"
         android:name="${applicationName}"

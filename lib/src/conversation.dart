@@ -1,6 +1,7 @@
 // ignore_for_file: unused_element, empty_catches
 
 import 'package:flutter/material.dart';
+import 'package:yichat/src/chatv2.dart';
 import 'package:yichat/src/multi_platform_widget/search_entry/search_entry_wide.dart';
 import 'package:tencent_cloud_chat_uikit/tencent_cloud_chat_uikit.dart';
 import 'package:tencent_cloud_chat_uikit/ui/controller/tim_uikit_conversation_controller.dart';

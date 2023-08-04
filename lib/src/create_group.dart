@@ -7,6 +7,7 @@ import 'package:tencent_cloud_chat_uikit/tencent_cloud_chat_uikit.dart';
 import 'package:yichat/src/chat.dart';
 import 'package:yichat/src/provider/theme.dart';
 import 'package:tencent_cloud_chat_uikit/ui/utils/screen_utils.dart';
+import 'package:yichat/yiim/yiim_manager.dart';
 
 enum GroupTypeForUIKit { single, work, chat, meeting, public }
 
@@ -24,7 +25,7 @@ class CreateGroup extends StatefulWidget {
 }
 
 class _CreateGroup extends State<CreateGroup> {
-  final V2TIMManager _sdkInstance = TIMUIKitCore.getSDKInstance();
+  final YIIMManager _sdkInstance = TIMUIKitCore.getSDKInstance();
   List<V2TimFriendInfo> friendList = [];
   List<V2TimFriendInfo> selectedFriendList = [];
 
